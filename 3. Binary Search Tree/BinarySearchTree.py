@@ -4,7 +4,10 @@ from collections import deque
 BUILD = 'B'
 FIND_MIN = 'm'
 FIND_MAX = 'M'
-
+SEARCH = 'S'
+INORDER = 'N'
+PREORDER = 'R'
+POSTORDER = 'O'
 class TreeNode:
   def __init__(self, k, l = None, r = None): 
     self.key = k
@@ -88,6 +91,34 @@ class BinarySearchTree:
         temp = deque()
         cnt += 1
 
+  def search(self, query):
+    curr = self.root
+    while curr != None:
+      if curr.key == query:
+        return query
+      elif curr.key > query:
+        curr = curr.left
+      else:
+        curr = curr.right
+
+  def writeInorder(self, outFile, x):
+    if x != None:
+      self.writeInorder(outFile, x.left)
+      outFile.write(str(x.key) + " ")
+      self.writeInorder(outFile, x.right)
+
+  def writePreorder(self, outFile, x):
+    if x != None:
+      outFile.write(str(x.key) + " ")
+      self.writePreorder(outFile, x.left)
+      self.writePreorder(outFile, x.right)
+
+  def writePostorder(self, outFile, x):
+    if x != None:
+      self.writePostorder(outFile, x.left)
+      self.writePostorder(outFile, x.right)
+      outFile.write(str(x.key) + " ")
+
 if __name__ == "__main__":
   if len(sys.argv) != 3:
     raise Exception("Correct usage: [program] [input] [output]")
@@ -119,6 +150,20 @@ if __name__ == "__main__":
           raise Exception("FindMax failed")
         else:
           outFile.write(str(found.key) + "\n")
+      elif op == SEARCH:
+        if len(words) != 2:
+          raise Exception("SEARCH: invalid input")
+        k = int(words[1])
+        tree.search(k)
+      elif op == INORDER:
+        tree.writeInorder(outFile, tree.root)
+        outFile.write("\n")
+      elif op == PREORDER:
+        tree.writePreorder(outFile, tree.root)
+        outFile.write("\n")
+      elif op == POSTORDER:
+        tree.writePostorder(outFile, tree.root)
+        outFile.write("\n")
       else:
         raise Exception("Undefined operator")
         
